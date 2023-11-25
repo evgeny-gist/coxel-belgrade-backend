@@ -29,6 +29,7 @@ ALLOWED_HOSTS = ['localhost', 'belgrade.coxel.ru']
 # Application definition
 
 INSTALLED_APPS = [
+    'core.apps.CoreConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
