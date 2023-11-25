@@ -29,6 +29,6 @@ class Attr(models.Model):
 
 
 class AttrValue(models.Model):
-    case_id = models.ForeignKey(Case, on_delete=models.CASCADE)
-    attr_id = models.ForeignKey(Attr, on_delete=models.CASCADE)
+    case_id = models.ForeignKey(Case, on_delete=models.CASCADE, related_name='case')
+    attr_id = models.ForeignKey(Attr, on_delete=models.CASCADE, related_name='attr')
     value = models.CharField(max_length=255, blank=True)
