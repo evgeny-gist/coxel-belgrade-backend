@@ -105,8 +105,8 @@ def question(request):
                 'show_request_form': True,
                 'not_strict_recommendation': False
             })
-            pass
 
+        # Если атрибуты есть - находим с самым высоким приоритетом
         sorted_attrs = sorted(all_attributes, key=lambda attr: attr.priority)
 
         selected_attr = sorted_attrs[0]
@@ -126,9 +126,58 @@ def question(request):
             'not_strict_recommendation': False
         })
 
-        # return HttpResponse(str(attr_priority.query))
 
-        # return JsonResponse({
-        # 'headers': str(request.headers),
-        # 'value': json.loads(request.body.decode())}
-        # )
+@csrf_exempt
+def fuzzy_recommendation(request):
+    if request.method == "POST":
+        body = json.loads(request.body.decode())
+
+        cases = []  # Здесь все кейсы, у которых совпадает хотя бы один атрибут из запроса
+        global_cases_ids = []
+        matched_cases = []
+
+        # Первое вхождение в цикл рекомендаций
+        for body_attr in body['attrs']:
+            attr_values = AttrValue.objects.filter(
+                Q(value=body_attr['value'], attr__name=body_attr['name'])
+            )
+            cases_ids = []
+            for attr_value in attr_values:
+                cases_ids.append(attr_value.case_id)
+
+            cases_to_add = Case.objects.filter(pk__in=cases_ids)
+
+            for case in cases_to_add:
+                if case.id in global_cases_ids:
+                    continue
+                cases.append(case)
+                global_cases_ids.append(case.id)
+        print("Cases all", cases)
+
+        # Поиск кейсов нестрого
+        for case in cases:
+            print('count', case.attr_values.count())
+
+            case_attrs_count = case.attr_values.count()
+            attr_value_match_counter = 0
+            attr_name_match_counter = 0
+
+            for body_attr in body['attrs']:
+                if case.attr_values.filter(
+                        Q(value=body_attr['value'], attr__name=body_attr['name'])
+                ).exists():
+                    attr_value_match_counter += 1
+                if case.attr_values.filter(attr__name=body_attr['name']).exists():
+                    attr_name_match_counter += 1
+            if attr_value_match_counter >= case_attrs_count - 1 \
+                and attr_name_match_counter == case_attrs_count:
+                matched_cases.append(case)
+
+        return JsonResponse({
+                'cases': [
+                    {'text': case.recommendation, 'update_date': case.update_date, 'name': case.name}
+                    for case in matched_cases],
+                'question': None,
+                'show_request_form': True,
+                'not_strict_recommendation': False
+            })

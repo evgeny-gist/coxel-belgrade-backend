@@ -5,4 +5,5 @@ from . import views
 urlpatterns = [
     path("", views.index, name="index"),
     path("question", views.question, name="question"),
+    path("fuzzy_recommendation", views.fuzzy_recommendation, name="fuzzy_recommendation")
 ]
