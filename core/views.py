@@ -37,6 +37,7 @@ def question(request):
             })
 
         cases = []  # Здесь все кейсы, у которых совпадает хотя бы один атрибут из запроса
+        cases_ids = []
         matched_cases = []
         all_attributes = []
         for body_attr in body['attrs']:
@@ -52,7 +53,10 @@ def question(request):
 
             print('casesToAdd query', cases_to_add.query)
             for case in cases_to_add:
+                if case.id in cases_to_add:
+                    continue
                 cases.append(case)
+                cases_ids.append(case.id)
 
         print("Cases all", cases)
         for case in cases:
