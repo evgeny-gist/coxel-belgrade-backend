@@ -213,9 +213,7 @@ def upload_request(request):
             body=body['request_form']['text'],
             user_name=body['request_form']['name'],
             email=body['request_form']['email'],
-            additional_contacts=','.join(body['request_form']['additional_contacts']),
-            create_date=datetime.now(),
-            update_date=datetime.now()
+            additional_contacts=','.join(body['request_form']['additional_contacts'])
         )
         user_request.save()
 
