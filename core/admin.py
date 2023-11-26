@@ -17,6 +17,18 @@ class CaseAdmin(admin.ModelAdmin):
     ]
 
 
+class AttrAdmin(admin.ModelAdmin):
+    list_display = ['name', 'priority']
+    sortable_by = ['priority']
+    ordering = ['-priority']
+
+
+class AttrValueAdmin(admin.ModelAdmin):
+    list_display = ['case', 'attr', 'value', 'is_any']
+    sortable_by = ['case', 'attr']
+    list_filter = ['case', 'attr']
+
+
 admin.site.register(Case, CaseAdmin)
-admin.site.register(Attr)
-admin.site.register(AttrValue)
+admin.site.register(Attr, AttrAdmin)
+admin.site.register(AttrValue, AttrValueAdmin)

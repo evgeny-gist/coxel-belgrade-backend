@@ -33,3 +33,7 @@ class AttrValue(models.Model):
     attr = models.ForeignKey(Attr, on_delete=models.CASCADE, related_name='attr_values')
     value = models.CharField(max_length=255, blank=True)
     is_any = models.BooleanField(default=False)
+
+    def __str__(self):
+        return 'Case: ' + self.case.name + ' | ' + self.attr.name + ': ' + (
+            str(self.value if not self.is_any else ' {Any variant}'))
