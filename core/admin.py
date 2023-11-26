@@ -11,11 +11,15 @@ class CaseAttrValueInline(admin.TabularInline):
 class RequestAttrInline(admin.TabularInline):
     model = RequestAttr
     extra = 0
+    readonly_fields = ['name', 'value']
+    can_delete = False
 
 
 class RequestFileInline(admin.TabularInline):
     model = RequestFile
     extra = 0
+    readonly_fields = ['url']
+    can_delete = False
 
 
 class CaseAdmin(admin.ModelAdmin):

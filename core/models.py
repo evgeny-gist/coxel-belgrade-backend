@@ -28,6 +28,9 @@ class RequestAttr(models.Model):
         verbose_name = 'Атрибут запроса пользователя'
         verbose_name_plural = 'Атрибуты запроса пользователя'
 
+    def __str__(self):
+        return str(self.name) + ' ' + str(self.value)
+
 
 class RequestFile(models.Model):
     request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name='file_urls', verbose_name='Запрос')
@@ -36,6 +39,9 @@ class RequestFile(models.Model):
     class Meta:
         verbose_name = 'Файл запроса пользователя'
         verbose_name_plural = 'Файлы запроса пользователя'
+
+    def __str__(self):
+        return str(self.url)
 
 
 class Case(models.Model):
