@@ -1,3 +1,9 @@
 /data/
 /static/
 /staticfiles/
+/.env.staging
+/.env.staging.db
+/.env.staging.proxy-companion
+/.env.prod
+/.env.prod.db
+/.env.prod.proxy-companion
