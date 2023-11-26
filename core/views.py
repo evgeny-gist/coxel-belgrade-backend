@@ -53,6 +53,7 @@ def question(request):
             for case in cases_to_add:
                 cases.append(case)
 
+        print("Cases all", cases)
         for case in cases:
             skip_case = False
             body_attr_names = []
@@ -66,6 +67,7 @@ def question(request):
                     skip_case = True
 
             if skip_case:
+                print('Skip case ', case)
                 continue
 
             matched_cases.append(case)
@@ -74,16 +76,17 @@ def question(request):
             for attr_value_of_case in case.attr_values.all():
                 all_attr_ids.append(attr_value_of_case.attr_id)
 
-            attr_priority = None
             try:
-                attr_priority = Attr.objects.filter(
+                attr_priority_select = Attr.objects.filter(
                     pk__in=all_attr_ids,
-                ).exclude(name__in=body_attr_names).order_by('priority')[:1].get()
+                ).exclude(name__in=body_attr_names).order_by('priority')[:1]
+                print('AttrPriority query: ', attr_priority_select.query)
+                all_attributes.append(attr_priority_select.get())
             except Exception as e:
+                print('Error: ', e)
                 # Если следующей рекомендации нет - не добавляем
                 continue
 
-            all_attributes.append(attr_priority)
 
         if len(all_attributes) == 0:
             return JsonResponse({
