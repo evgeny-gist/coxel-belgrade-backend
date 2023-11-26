@@ -3,6 +3,36 @@ from datetime import datetime
 
 
 # Create your models here.
+class Request(models.Model):
+    topic = models.CharField(max_length=255, verbose_name='Тема')
+    body = models.TextField(verbose_name='Тело заявки')
+    create_date = models.DateTimeField(blank=True, verbose_name='Дата создания')
+    update_date = models.DateTimeField(blank=True, verbose_name='Дата обновления')
+    user_name = models.CharField(max_length=255, verbose_name='Имя заявителя')
+    email = models.CharField(max_length=255, verbose_name='Email заявителя')
+    additional_contacts = models.CharField(max_length=255, verbose_name='Контакты заявителя')
+    files = models.TextField(verbose_name='Приложенные файлы')
+
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Запрос'
+        verbose_name_plural = 'Запросы'
+
+
+class RequestAttr(models.Model):
+    request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name='attr_values', verbose_name='Запрос')
+    name = models.CharField(max_length=255, blank=True, verbose_name='Имя')
+    value = models.CharField(max_length=255, blank=True, verbose_name='Значение')
+
+
+class RequestFile(models.Model):
+    request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name='file_urls', verbose_name='Запрос')
+    url = models.CharField(max_length=255, blank=True, verbose_name='Адрес файла')
+
+
 class Case(models.Model):
     class CaseType(models.IntegerChoices):
         COMPLETE = 1

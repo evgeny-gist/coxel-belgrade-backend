@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db.models import Q
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -5,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.core import serializers
 
-from core.models import Attr, AttrValue, Case
+from core.models import Attr, AttrValue, Case, RequestAttr, Request, RequestFile
 
 
 # Create your views here.
@@ -200,3 +201,40 @@ def fuzzy_recommendation(request):
                 'show_request_form': True,
                 'not_strict_recommendation': False
             })
+
+
+@csrf_exempt
+def upload_request(request):
+    if request.method == "POST":
+        body = json.loads(request.body.decode())
+
+        user_request = Request(
+            topic=body['request_form']['topic'],
+            body=body['request_form']['text'],
+            user_name=body['request_form']['name'],
+            email=body['request_form']['email'],
+            additional_contacts=','.join(body['request_form']['additional_contacts']),
+            create_date=datetime.now(),
+            update_date=datetime.now()
+        )
+        user_request.save()
+
+        for body_attr in body['attrs']:
+            request_attr = RequestAttr.objects.create(
+                request=user_request,
+                name=body_attr['name'],
+                value=body_attr['value']
+            )
+            request_attr.save()
+        
+        for file in body['request_form']['files']:
+            request_file = RequestFile.objects.create(
+                request=user_request,
+                url=file
+            )
+            request_file.save()
+
+        return JsonResponse({'status': 'OK'})
+
+        
+
