@@ -37,9 +37,11 @@ def question(request):
             })
 
         cases = []  # Здесь все кейсы, у которых совпадает хотя бы один атрибут из запроса
-        cases_ids = []
+        global_cases_ids = []
         matched_cases = []
         all_attributes = []
+
+        # Первое вхождение в цикл рекомендаций
         for body_attr in body['attrs']:
             attr_values = AttrValue.objects.filter(
                 Q(value=body_attr['value'], attr__name=body_attr['name']) |
@@ -53,12 +55,13 @@ def question(request):
 
             print('casesToAdd query', cases_to_add.query)
             for case in cases_to_add:
-                if case.id in cases_to_add:
+                if case.id in global_cases_ids:
                     continue
                 cases.append(case)
-                cases_ids.append(case.id)
-
+                global_cases_ids.append(case.id)
         print("Cases all", cases)
+
+        # Поиск следующего атрибута
         for case in cases:
             skip_case = False
             body_attr_names = []
@@ -92,7 +95,7 @@ def question(request):
                 # Если следующей рекомендации нет - не добавляем
                 continue
 
-
+        # Если нет больше атрибутов(вопросов)
         if len(all_attributes) == 0:
             return JsonResponse({
                 'cases': [
