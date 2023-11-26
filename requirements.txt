@@ -3,3 +3,4 @@ psycopg2>=2.8
 djangorestframework
 django-cors-headers
 django-admin-interface
+gunicorn
