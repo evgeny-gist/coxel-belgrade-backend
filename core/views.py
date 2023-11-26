@@ -9,6 +9,13 @@ from django.core import serializers
 from core.models import Attr, AttrValue, Case, RequestAttr, Request, RequestFile
 
 
+def is_string_empty(string):
+    if not string:
+        return True
+    if not string.strip():
+        return True
+
+
 # Create your views here.
 @csrf_exempt
 def index(request):
@@ -101,7 +108,7 @@ def question(request):
             return JsonResponse({
                 'cases': [
                     {'text': case.recommendation, 'update_date': case.update_date, 'name': case.name}
-                    for case in matched_cases],
+                    for case in matched_cases if not is_string_empty(case.recommendation)],
                 'question': None,
                 'show_request_form': True,
                 'not_strict_recommendation': False
@@ -136,7 +143,7 @@ def question(request):
             'cases': [{
                 'text': strict_case.recommendation,
                 'update_date': strict_case.update_date,
-                'name': strict_case.name}] if strict_case else None,
+                'name': strict_case.name}] if strict_case and not is_string_empty(strict_case.recommendation) else None,
             'question': {
                 'attr_name': selected_attr.name,
                 'question_text': selected_attr.question,
@@ -196,7 +203,7 @@ def fuzzy_recommendation(request):
         return JsonResponse({
             'cases': [
                 {'text': case.recommendation, 'update_date': case.update_date, 'name': case.name}
-                for case in matched_cases],
+                for case in matched_cases if not is_string_empty(case.recommendation)],
             'question': None,
             'show_request_form': True,
             'not_strict_recommendation': False
