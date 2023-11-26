@@ -133,10 +133,10 @@ def question(request):
                 break
 
         return JsonResponse({
-            'cases': {
+            'cases': [{
                 'text': strict_case.recommendation, 
                 'update_date': strict_case.update_date, 
-                'name': strict_case.name} if strict_case else None,
+                'name': strict_case.name}] if strict_case else None,
             'question': {
                 'attr_name': selected_attr.name,
                 'question_text': selected_attr.question,
