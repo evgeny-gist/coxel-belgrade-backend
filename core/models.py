@@ -10,14 +10,13 @@ class Request(models.Model):
     user_name = models.CharField(max_length=255, verbose_name='Имя заявителя', blank=True)
     email = models.CharField(max_length=255, verbose_name='Email заявителя', blank=True)
     additional_contacts = models.CharField(max_length=255, verbose_name='Контакты заявителя', blank=True)
-    files = models.TextField(verbose_name='Приложенные файлы', blank=True)
 
     def __str__(self):
         return self.topic
 
     class Meta:
-        verbose_name = 'Запрос'
-        verbose_name_plural = 'Запросы'
+        verbose_name = 'Запрос пользователя'
+        verbose_name_plural = 'Запросы пользователя'
 
 
 class RequestAttr(models.Model):
@@ -25,10 +24,18 @@ class RequestAttr(models.Model):
     name = models.CharField(max_length=255, blank=True, verbose_name='Имя')
     value = models.CharField(max_length=255, blank=True, verbose_name='Значение')
 
+    class Meta:
+        verbose_name = 'Атрибут запроса пользователя'
+        verbose_name_plural = 'Атрибуты запроса пользователя'
+
 
 class RequestFile(models.Model):
     request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name='file_urls', verbose_name='Запрос')
     url = models.CharField(max_length=255, blank=True, verbose_name='Адрес файла')
+
+    class Meta:
+        verbose_name = 'Файл запроса пользователя'
+        verbose_name_plural = 'Файлы запроса пользователя'
 
 
 class Case(models.Model):

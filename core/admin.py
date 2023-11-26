@@ -5,7 +5,16 @@ from .models import *
 
 class CaseAttrValueInline(admin.TabularInline):
     model = AttrValue
-    # readonly_fields = ['value']
+    extra = 0
+
+
+class RequestAttrInline(admin.TabularInline):
+    model = RequestAttr
+    extra = 0
+
+
+class RequestFileInline(admin.TabularInline):
+    model = RequestFile
     extra = 0
 
 
@@ -38,6 +47,7 @@ class AttrValueAdmin(admin.ModelAdmin):
 class RequestAdmin(admin.ModelAdmin):
     list_display = ["topic", "email", 'create_date']
     readonly_fields = ['create_date']
+    inlines = [RequestAttrInline, RequestFileInline]
 
 
 admin.site.register(Case, CaseAdmin)
