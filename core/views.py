@@ -53,7 +53,6 @@ def question(request):
 
             cases_to_add = Case.objects.filter(pk__in=cases_ids)
 
-            print('casesToAdd query', cases_to_add.query)
             for case in cases_to_add:
                 if case.id in global_cases_ids:
                     continue
@@ -114,9 +113,29 @@ def question(request):
         attr_values_values = list(AttrValue.objects.filter(
             attr=selected_attr.id).values_list('value', flat=True).distinct(
             'value'))
+        
+        # Если есть кейс со строгим совпадением - выводим его в cases
+        strict_case = None
+        for case in cases:
+            if case.attr_values.count() != len(body['attrs']):
+                continue
+            skip_case = False
+            for body_attr in body['attrs']:
+                if not case.attr_values.filter(
+                        Q(value=body_attr['value'], attr__name=body_attr['name']) |
+                        Q(is_any=True, attr__name=body_attr['name'])
+                ).exists():
+                    skip_case = True
+                    break
+            if not skip_case:
+                strict_case = case
+                break
 
         return JsonResponse({
-            'cases': None,
+            'cases': {
+                'text': strict_case.recommendation, 
+                'update_date': strict_case.update_date, 
+                'name': strict_case.name} if strict_case else None,
             'question': {
                 'attr_name': selected_attr.name,
                 'question_text': selected_attr.question,
