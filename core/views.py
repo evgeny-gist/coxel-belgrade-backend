@@ -46,10 +46,11 @@ def question(request):
             )
             cases_ids = []
             for attr_value in attr_values:
-                cases_ids.append(attr_value.id)
+                cases_ids.append(attr_value.case_id)
 
             cases_to_add = Case.objects.filter(pk__in=cases_ids)
 
+            print('casesToAdd query', cases_to_add.query)
             for case in cases_to_add:
                 cases.append(case)
 
