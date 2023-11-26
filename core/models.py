@@ -32,3 +32,4 @@ class AttrValue(models.Model):
     case = models.ForeignKey(Case, on_delete=models.CASCADE, related_name='attr_values')
     attr = models.ForeignKey(Attr, on_delete=models.CASCADE, related_name='attr_values')
     value = models.CharField(max_length=255, blank=True)
+    is_any = models.BooleanField(default=False)
