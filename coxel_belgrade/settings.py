@@ -54,6 +54,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "https://coxel.ru",
+    "http://coxel.ru",
     "http://localhost",
 ]
 
