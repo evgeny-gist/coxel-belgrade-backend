@@ -5,17 +5,15 @@ from datetime import datetime
 # Create your models here.
 class Request(models.Model):
     topic = models.CharField(max_length=255, verbose_name='Тема')
-    body = models.TextField(verbose_name='Тело заявки')
-    create_date = models.DateTimeField(blank=True, verbose_name='Дата создания')
-    update_date = models.DateTimeField(blank=True, verbose_name='Дата обновления')
-    user_name = models.CharField(max_length=255, verbose_name='Имя заявителя')
-    email = models.CharField(max_length=255, verbose_name='Email заявителя')
-    additional_contacts = models.CharField(max_length=255, verbose_name='Контакты заявителя')
-    files = models.TextField(verbose_name='Приложенные файлы')
-
+    body = models.TextField(verbose_name='Тело заявки', blank=True)
+    create_date = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
+    user_name = models.CharField(max_length=255, verbose_name='Имя заявителя', blank=True)
+    email = models.CharField(max_length=255, verbose_name='Email заявителя', blank=True)
+    additional_contacts = models.CharField(max_length=255, verbose_name='Контакты заявителя', blank=True)
+    files = models.TextField(verbose_name='Приложенные файлы', blank=True)
 
     def __str__(self):
-        return self.name
+        return self.topic
 
     class Meta:
         verbose_name = 'Запрос'
