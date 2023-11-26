@@ -30,6 +30,8 @@ ALLOWED_HOSTS = ['localhost', 'belgrade.coxel.ru']
 
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
+    "admin_interface",
+    "colorfield",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -57,6 +59,13 @@ CORS_ALLOWED_ORIGINS = [
     "http://coxel.ru",
     "http://localhost",
 ]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
 
 ROOT_URLCONF = 'coxel_belgrade.urls'
 
