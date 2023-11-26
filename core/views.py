@@ -166,7 +166,8 @@ def fuzzy_recommendation(request):
         # Первое вхождение в цикл рекомендаций
         for body_attr in body['attrs']:
             attr_values = AttrValue.objects.filter(
-                Q(value=body_attr['value'], attr__name=body_attr['name'])
+                Q(value=body_attr['value'], attr__name=body_attr['name']) |
+                    Q(is_any=True, attr__name=body_attr['name'])
             )
             cases_ids = []
             for attr_value in attr_values:
@@ -191,12 +192,13 @@ def fuzzy_recommendation(request):
 
             for body_attr in body['attrs']:
                 if case.attr_values.filter(
-                        Q(value=body_attr['value'], attr__name=body_attr['name'])
+                        Q(value=body_attr['value'], attr__name=body_attr['name']) |
+                        Q(is_any=True, attr__name=body_attr['name'])
                 ).exists():
                     attr_value_match_counter += 1
                 if case.attr_values.filter(attr__name=body_attr['name']).exists():
                     attr_name_match_counter += 1
-            if attr_value_match_counter >= case_attrs_count - 1 \
+            if attr_value_match_counter == case_attrs_count - 1 \
                     and attr_name_match_counter == case_attrs_count:
                 matched_cases.append(case)
 
