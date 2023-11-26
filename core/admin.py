@@ -3,15 +3,21 @@ from django.contrib import admin
 from .models import *
 
 
+class CaseAttrValueInline(admin.TabularInline):
+    model = AttrValue
+    # readonly_fields = ['value']
+    extra = 0
+
+
 class CaseAdmin(admin.ModelAdmin):
     list_display = ["name", "update_date"]
-
+    inlines = [CaseAttrValueInline]
     fieldsets = [
-        ("Basic",
+        ("Основное",
          {"fields": ['name',
                      'recommendation',
                      'type', ]}),
-        ("Date information",
+        ("Дата",
          {"fields": ['create_date',
                      'update_date', ]}),
     ]
@@ -21,6 +27,7 @@ class AttrAdmin(admin.ModelAdmin):
     list_display = ['name', 'priority']
     sortable_by = ['priority']
     ordering = ['-priority']
+    
 
 
 class AttrValueAdmin(admin.ModelAdmin):
