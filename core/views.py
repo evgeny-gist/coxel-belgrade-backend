@@ -24,7 +24,8 @@ def question(request):
         body = json.loads(request.body.decode())
         if not body['attrs']:
             attr = Attr.objects.order_by('priority')[:1].get()
-            attr_values = list(AttrValue.objects.filter(attr=attr).values_list('value', flat=True).distinct('value'))
+            attr_values = list(AttrValue.objects.filter(
+                attr=attr).exclude(value='').values_list('value', flat=True).distinct('value'))
 
             return JsonResponse({
                 'cases': None,
@@ -112,9 +113,8 @@ def question(request):
         selected_attr = sorted_attrs[0]
 
         attr_values_values = list(AttrValue.objects.filter(
-            attr=selected_attr.id).values_list('value', flat=True).distinct(
-            'value'))
-        
+            attr=selected_attr.id).exclude(value='').values_list('value', flat=True).distinct('value'))
+
         # Если есть кейс со строгим совпадением - выводим его в cases
         strict_case = None
         for case in cases:
@@ -134,8 +134,8 @@ def question(request):
 
         return JsonResponse({
             'cases': [{
-                'text': strict_case.recommendation, 
-                'update_date': strict_case.update_date, 
+                'text': strict_case.recommendation,
+                'update_date': strict_case.update_date,
                 'name': strict_case.name}] if strict_case else None,
             'question': {
                 'attr_name': selected_attr.name,
@@ -190,17 +190,17 @@ def fuzzy_recommendation(request):
                 if case.attr_values.filter(attr__name=body_attr['name']).exists():
                     attr_name_match_counter += 1
             if attr_value_match_counter >= case_attrs_count - 1 \
-                and attr_name_match_counter == case_attrs_count:
+                    and attr_name_match_counter == case_attrs_count:
                 matched_cases.append(case)
 
         return JsonResponse({
-                'cases': [
-                    {'text': case.recommendation, 'update_date': case.update_date, 'name': case.name}
-                    for case in matched_cases],
-                'question': None,
-                'show_request_form': True,
-                'not_strict_recommendation': False
-            })
+            'cases': [
+                {'text': case.recommendation, 'update_date': case.update_date, 'name': case.name}
+                for case in matched_cases],
+            'question': None,
+            'show_request_form': True,
+            'not_strict_recommendation': False
+        })
 
 
 @csrf_exempt
@@ -224,7 +224,7 @@ def upload_request(request):
                 value=body_attr['value']
             )
             request_attr.save()
-        
+
         for file in body['request_form']['files']:
             request_file = RequestFile.objects.create(
                 request=user_request,
@@ -233,6 +233,3 @@ def upload_request(request):
             request_file.save()
 
         return JsonResponse({'status': 'OK'})
-
-        
-
